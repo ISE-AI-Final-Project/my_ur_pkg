@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <material name="Grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  <material name="DarkGrey">
+    <color rgba="0.04 0.04 0.04 1.0"/>
+  </material>
+  <material name="LightGrey">
+    <color rgba="0.8 0.8 0.8 1.0"/>
+  </material>
+  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+  <xacro:macro name="my_robot_cell" params="
+    parent
+    *origin
+    ur_type
+    joint_limits_parameters_file
+    kinematics_parameters_file
+    physical_parameters_file
+    visual_parameters_file
+    ">
+    <joint name="table_base_joint" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${parent}" />
+      <child link="table" />
+    </joint>
+    <link name="table">
+      <visual>
+        <geometry>
+          <box size="0.80 0.72 0.80"/>
+        </geometry>
+        <material name="LightGrey"/>
+        <origin rpy="0 0 0" xyz="0.40 0.36 -0.4"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.80 0.72 0.80"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0.40 0.36 -0.4"/>
+      </collision>
+    </link>
+    <link name="robot_mount"/>
+    <joint name="base_to_robot_mount" type="fixed">
+      <parent link="table"/>
+      <child link="robot_mount"/>
+      <origin xyz="0.40 0.53 0.0" rpy="0 0 ${pi}" />
+    </joint>
+    <!--This will create the specific robot-->
+    <xacro:ur_robot
+      name="${ur_type}"
+      tf_prefix=""
+      parent="robot_mount"
+      joint_limits_parameters_file="${joint_limits_parameters_file}"
+      kinematics_parameters_file="${kinematics_parameters_file}"
+      physical_parameters_file="${physical_parameters_file}"
+      visual_parameters_file="${visual_parameters_file}"
+      generate_ros2_control_tag="false"
+    >
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:ur_robot>
+    <!-- HAND E -->
+    <joint name="robotiq_hande_coupler_joint" type="fixed">
+      <origin xyz="0 0 0.00695" rpy="0 0 ${-pi/2.0}"/>
+      <parent link="tool0"/>
+      <child link="robotiq_hande_coupler"/>
+    </joint>
+    <link name="robotiq_hande_coupler">
+      <inertial>
+        <mass value="0.168"/>
+        <inertia ixx="6.17674E-05" ixy="0.0" ixz="0.0" iyy="6.17674E-05" iyz="0.0" izz="1.18125E-04"/>
+      </inertial>
+      <collision>
+        <geometry>
+          <cylinder length="0.0139" radius="0.0375"/>
+        </geometry>
+      </collision>
+      <visual>
+        <geometry>
+          <mesh filename="package://robotiq_hande_description/meshes/coupler.dae"/>
+        </geometry>
+        <material name="DarkGrey"/>
+      </visual>
+    </link>
+    <joint name="robotiq_hande_base_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0.055"/>
+      <parent link="robotiq_hande_coupler"/>
+      <child link="robotiq_hande_link"/>
+    </joint>
+    <link name="robotiq_hande_link">
+      <inertial>
+        <mass value="0.86387"/>
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.0006"/>
+      </inertial>
+      <collision>
+        <geometry>
+          <cylinder length="0.0988" radius="0.0375"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 -1.570796 -1.570796" xyz="0 0 -0.0016"/>
+        <geometry>
+          <mesh filename="package://robotiq_hande_description/meshes/hande.dae" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="DarkGrey"/>
+      </visual>
+    </link>
+    <joint name="robotiq_hande_left_finger_joint" type="prismatic">
+      <origin rpy="0 0 0" xyz="0 -0.025 0.0345"/>
+      <parent link="robotiq_hande_link"/>
+      <child link="robotiq_hande_left_finger"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="130" lower="0" upper="0.025" velocity="0.15"/>
+    </joint>
+    <link name="robotiq_hande_left_finger">
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.03804"/>
+        <inertia ixx="1E-9" ixy="0.0" ixz="0.0" iyy="1E-9" iyz="0.0" izz="1E-9"/>
+      </inertial>
+      <collision>
+        <origin rpy="0 0 3.1415926" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_hande_description/meshes/finger_collision.dae" scale="1.0 1.0 1.0"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="1.570796 0 3.1415926" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_hande_description/meshes/finger.dae" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+    </link>
+    <joint name="robotiq_hande_right_finger_joint" type="prismatic">
+      <origin rpy="0 0 0" xyz="0 0.025 0.0345"/>
+      <parent link="robotiq_hande_link"/>
+      <child link="robotiq_hande_right_finger"/>
+      <axis xyz="0 -1 0"/>
+      <limit effort="130" lower="0" upper="0.025" velocity="0.15"/>
+      <mimic joint="robotiq_hande_left_finger_joint" multiplier="1" offset="0"/>
+    </joint>
+    <link name="robotiq_hande_right_finger">
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <mass value="0.03804"/>
+        <inertia ixx="1E-9" ixy="0.0" ixz="0.0" iyy="1E-9" iyz="0.0" izz="1E-9"/>
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_hande_description/meshes/finger_collision.dae" scale="1.0 1.0 1.0"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="1.570796 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_hande_description/meshes/finger.dae" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+    </link>
+    <joint name="robotiq_hande_end_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0.095"/>
+      <parent link="robotiq_hande_link"/>
+      <child link="robotiq_hande_end"/>
+    </joint>
+    <link name="robotiq_hande_end"/>
+    <!-- Mount -->
+    <material name="silver">
+      <color rgba="0.700 0.700 0.700 1.000"/>
+    </material>
+    <material name="black">
+      <color rgba="0.000 0.000 0.000 1.000"/>
+    </material>
+    <material name="white">
+      <color rgba="1.000 1.000 1.000 1.000"/>
+    </material>
+    <material name="gray">
+      <color rgba="0.100 0.100 0.100 1.000"/>
+    </material>
+    <!-- Mount -->
+    <link name="mount">
+      <inertial>
+        <origin xyz="0.046989528833305955 -0.025915479612535458 0.02673309777483681" rpy="0 0 0"/>
+        <mass value="0.7988015982397811"/>
+        <inertia ixx="0.002248" iyy="0.000415" izz="0.002464" ixy="4.8e-05" iyz="-0.0" ixz="1e-06"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.016 0.0666 0.027" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://my_robot_cell_description/meshes/mount/mount_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="-0.016 0.0666 0.027" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://my_robot_cell_description/meshes/mount/mount_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <!-- ZED -->
+    <link name="zed2i">
+      <inertial>
+        <origin xyz="-0.014940784453936096 -8.359960537301925e-07 0.004021717834959214" rpy="0 0 0"/>
+        <mass value="1.3117701970682403"/>
+        <inertia ixx="0.003065" iyy="0.000255" izz="0.003005" ixy="0.0" iyz="0.0" ixz="-1e-06"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.087152 0.0936 0.003391" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://my_robot_cell_description/meshes/mount/zed2i_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="gray"/>
+      </visual>
+      <collision>
+        <origin xyz="-0.087152 0.0936 0.003391" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://my_robot_cell_description/meshes/mount/zed2i_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <link name="zed2i_cam_right">
+      <inertial>
+        <origin xyz="-3.5072307380534795e-07 9.204312224203592e-08 0.000500234126710776" rpy="0 0 0"/>
+        <mass value="0.00228465779146021"/>
+        <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.072027 0.0336 0.018886" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://my_robot_cell_description/meshes/mount/zed2i_cam_right_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+    <link name="zed2i_cam_left">
+      <inertial>
+        <origin xyz="-3.507230769139724e-07 9.2043121124874e-08 0.0005002341267107864" rpy="0 0 0"/>
+        <mass value="0.002284657791460211"/>
+        <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.072027 0.1536 0.018886" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://my_robot_cell_description/meshes/mount/zed2i_cam_left_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+    <joint name="mount_joint" type="fixed">
+      <origin xyz="0.016 0.027 -0.0314" rpy="1.570796 0 0"/>
+      <parent link="robotiq_hande_link"/>
+      <child link="mount"/>
+    </joint>
+    <joint name="joint_zed_mount" type="fixed">
+      <origin xyz="0.071152 -0.027 0.023609" rpy="0 0 0"/>
+      <parent link="mount"/>
+      <child link="zed2i"/>
+    </joint>
+    <joint name="joint_zed_right" type="fixed">
+      <origin xyz="-0.015125 0.06 -0.015495" rpy="0 0 0"/>
+      <parent link="zed2i"/>
+      <child link="zed2i_cam_right"/>
+    </joint>
+    <joint name="joint_zed_left" type="fixed">
+      <origin xyz="-0.015125 -0.06 -0.015495" rpy="0 0 0"/>
+      <parent link="zed2i"/>
+      <child link="zed2i_cam_left"/>
+    </joint>
+    <joint name="joint_to_zed_camera_link" type="fixed">
+      <origin xyz="0 0 0" rpy="0 1.570796327 3.141592654"/>
+      <parent link="zed2i"/>
+      <child link="zed_camera_link"/>
+    </joint>
+    <link name="zed_camera_link"/>
+  </xacro:macro>
+</robot>
