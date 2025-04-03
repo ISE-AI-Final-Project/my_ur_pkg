@@ -193,7 +193,8 @@
         <material name="black"/>
       </visual>
       <collision>
-        <origin xyz="-0.016 0.0666 0.027" rpy="0 0 0"/>
+        <!-- Offset collision up by 1 cm because of bolt -->
+        <origin xyz="-0.006 0.0666 0.027" rpy="0 0 0"/>
         <geometry>
           <mesh filename="package://my_robot_cell_description/meshes/mount/mount_1.stl" scale="0.001 0.001 0.001"/>
         </geometry>
