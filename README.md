@@ -11,6 +11,11 @@ You should have these package, or source them before running.
 Clone this repo into your_workspace/src, then build
 
 ## Run with URSim
+Use Launch
+```   
+ros2 launch my_robot_cell_control ursim_bringup.launch.py
+```
+Or Run manually:
 1. Start UR Sim Docker
 ```   
 ros2 run ur_client_library start_ursim.sh -m ur3e -i 192.168.56.101
@@ -31,6 +36,13 @@ ros2 launch my_robot_cell_moveit_config moveit_rviz.launch.py ur_type:=ur3e laun
 ```
 
 ## Run with Real UR
+
+Use Launch (start and connect LAN first.)
+```   
+ros2 launch my_robot_cell_control realur3e_bringup.launch.py
+```
+Or Run manually:
+
 1. Start real UR3e
 
 2. Start Driver
