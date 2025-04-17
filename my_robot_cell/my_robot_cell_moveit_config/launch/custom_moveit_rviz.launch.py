@@ -9,7 +9,7 @@ def generate_launch_description():
     # Declare the launch argument for the RViz config filename
     declare_rviz_config_arg = DeclareLaunchArgument(
         name='rviz_config',
-        default_value='moveit.rviz',
+        default_value='main.rviz',
         description='Name of the RViz config file located in the config directory'
     )
 

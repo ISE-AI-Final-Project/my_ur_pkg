@@ -92,7 +92,7 @@ def generate_launch_description():
             DeclareLaunchArgument("start_delay", default_value="12"),
             DeclareLaunchArgument("ur_type", default_value="ur3e"),
             DeclareLaunchArgument("robot_ip", default_value="192.168.56.101"),
-            DeclareLaunchArgument("rviz_config", default_value="moveit.rviz"),
+            DeclareLaunchArgument("rviz_config", default_value="main.rviz"),
             # 1. Start URSim
             ExecuteProcess(
                 cmd=[
