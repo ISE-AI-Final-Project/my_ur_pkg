@@ -9,7 +9,7 @@
   <material name="LightGrey">
     <color rgba="0.8 0.8 0.8 1.0"/>
   </material>
-  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+  <xacro:include filename="$(find senior_ur_description)/urdf/ur_macro.xacro"/>
   <xacro:macro name="my_robot_cell" params="
     parent
     *origin
