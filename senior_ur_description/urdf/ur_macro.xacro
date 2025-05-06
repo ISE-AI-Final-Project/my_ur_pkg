@@ -170,11 +170,18 @@
           <xacro:get_mesh name="shoulder" type="visual"/>
         </geometry>
       </visual>
- 	<collision>
+      <collision>
         <!-- |a2| = 0.24355 m; radius ≈0.03 m -->
-        <origin xyz="0 0 0.015" rpy="0 0 ${pi}"/>
+        <origin xyz="0 0 0.010" rpy="0 0 ${pi}"/>
         <geometry>
-          <cylinder length="0.11" radius="0.075"/>
+          <cylinder length="0.11" radius="0.05"/>
+        </geometry>
+      </collision>
+      <collision >
+        <!-- collision2 -->
+        <origin xyz="0 -0.06 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder length="0.25" radius="0.05"/>
         </geometry>
       </collision>
       <inertial>
@@ -188,7 +195,8 @@
             iyz="${shoulder_inertia_iyz}"
             izz="${shoulder_inertia_izz}"
         />
-      </inertial>    </link>
+      </inertial>
+    </link>
     <link name="${tf_prefix}upper_arm_link">
       <visual>
         <origin xyz="0 0 ${shoulder_offset}" rpy="${pi/2} 0 ${-pi/2}"/>
@@ -196,11 +204,18 @@
           <xacro:get_mesh name="upper_arm" type="visual"/>
         </geometry>
       </visual>
-       <collision>
+      <collision>
         <!-- |a3| = 0.2132 m; radius ≈0.03 m -->
-        <origin xyz="-0.15 0 ${shoulder_offset}" rpy="${pi/2} 0 ${-pi/2}"/>
+        <origin xyz="-0.115 0 ${shoulder_offset}" rpy="${pi/2} 0 ${-pi/2}"/>
         <geometry>
-          <cylinder length="0.35" radius="0.07"/>
+          <cylinder length="0.33" radius="0.05"/>
+        </geometry>
+      </collision>
+      <collision >
+        <!-- collision2 -->
+        <origin xyz="-0.24 0 0.10" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.16" radius="0.046"/>
         </geometry>
       </collision>
       <inertial>
@@ -225,9 +240,9 @@
       </visual>
       <collision>
         <!-- d4 = 0.13105 m; radius ≈0.025 m -->
-        <origin xyz="0 0 ${elbow_offset + 0.065525}" rpy="${pi/2} 0 ${-pi/2}"/>
+        <origin xyz="-0.10 0 ${elbow_offset - 0.0}" rpy="${pi/2} 0 ${-pi/2}"/>
         <geometry>
-          <cylinder length="0.13105" radius="0.025"/>
+          <cylinder length="0.26" radius="0.033"/>
         </geometry>
       </collision>
       <inertial>
@@ -244,18 +259,18 @@
       </inertial>
     </link>
     <link name="${tf_prefix}wrist_1_link">
-	  <xacro:get_visual_params name="wrist_1" type="visual_offset"/>
+      <xacro:get_visual_params name="wrist_1" type="visual_offset"/>
       <visual>
-      	<origin xyz="0 0 ${visual_params}" rpy="${pi/2} 0 0"/>
+        <origin xyz="0 0 ${visual_params}" rpy="${pi/2} 0 0"/>
         <geometry>
           <xacro:get_mesh name="wrist_1" type="visual"/>
         </geometry>
       </visual>
       <collision>
         <!-- d5 = 0.08535 m; radius ≈0.02 m -->
-        <origin xyz="0 0 ${visual_params + 0.042675}" rpy="${pi/2} 0 0"/>
+        <origin xyz="0 0 ${visual_params + 0.025}" rpy="0 0 ${pi/2}"/>
         <geometry>
-          <cylinder length="0.08535" radius="0.02"/>
+          <cylinder length="0.15" radius="0.033"/>
         </geometry>
       </collision>
       <inertial>
@@ -272,18 +287,18 @@
       </inertial>
     </link>
     <link name="${tf_prefix}wrist_2_link">
-          <xacro:get_visual_params name="wrist_2" type="visual_offset"/>
+      <xacro:get_visual_params name="wrist_2" type="visual_offset"/>
       <visual>
         <origin xyz="0 0 ${visual_params}" rpy="0 0 0"/>
         <geometry>
           <xacro:get_mesh name="wrist_2" type="visual"/>
         </geometry>
       </visual>
-       <collision>
+      <collision>
         <!-- d6 = 0.0921 m; radius ≈0.02 m -->
-        <origin xyz="0 0 ${visual_params + 0.04605}" rpy="0 0 0"/>
+        <origin xyz="0 0 ${visual_params + 0.03}" rpy="0 0 0"/>
         <geometry>
-          <cylinder length="0.0921" radius="0.02"/>
+          <cylinder length="0.16" radius="0.033"/>
         </geometry>
       </collision>
       <inertial>
@@ -303,7 +318,6 @@
       <!-- TODO: remove this once all wrist_3 meshes have the visual_offset_xyz tag -->
       <xacro:get_visual_params name="wrist_3" type="visual_offset_xyz"/>
       <xacro:property name="mesh_offset" value="${visual_params}" scope="parent"/>
-
       <xacro:if value="${visual_params == ''}">
         <xacro:get_visual_params name="wrist_3" type="visual_offset"/>
         <xacro:property name="mesh_offset" value="0 0 ${visual_params}" scope="parent"/>
@@ -316,9 +330,9 @@
       </visual>
       <collision>
         <!-- final stub flange, length ≈0.0921 m; radius ≈0.02 m -->
-        <origin xyz="${mesh_offset}" rpy="${pi/2} 0 0"/>
+        <origin xyz="0 0 -0.065" rpy="0 0 ${pi/2}"/>
         <geometry>
-          <cylinder length="0.0921" radius="0.02"/>
+          <cylinder length="0.15" radius="0.033"/>
         </geometry>
       </collision>
       <inertial>
