@@ -271,7 +271,7 @@
       <child link="${tf_prefix}zed2i_cam_left"/>
     </joint>
     <joint name="${tf_prefix}joint_to_zed_camera_link" type="fixed">
-      <origin xyz="0 0 0" rpy="0 1.570796327 3.141592654"/>
+      <origin xyz="0 0 -0.018" rpy="0 1.570796327 3.141592654"/>
       <parent link="${tf_prefix}zed2i"/>
       <child link="${tf_prefix}zed_camera_link"/>
     </joint>
